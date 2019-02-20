@@ -1,0 +1,31 @@
+# drln-core configuration file
+
+[database]
+server = "localhost"
+port = "3306"
+user = "root" 
+password = "qwerty"
+database = "drlm3"
+
+[minio]
+server = "localhost"
+port = "9000"
+ssl = false
+access_key = "drlm3minio"
+secret_key = "drlm3minio"
+
+[drlmapi]
+port = "50051"
+
+[logging]
+#############################################################################
+# level = trace ("Something very low level.")                               #
+#         debug ("Useful debugging information.")                           #
+#         info  ("Something noteworthy happened!")                          #
+#         warn  ("You should probably take a look at this.")                #
+#         error ("Something failed but I'm not quitting.")                  #
+#         fatal ("Bye.")             --> Calls os.Exit(1) after logging     #
+#         panic ("I'm bailing.")     --> Calls panic() after logging        #
+#############################################################################
+level = "trace"
+file = "./go.log/info.log"
