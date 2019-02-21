@@ -2,9 +2,12 @@ package lib
 
 import (
 	"context"
+	"fmt"
 	"net"
+	"os"
 
 	pb "github.com/brainupdaters/drlm-comm/drlmcomm"
+	"github.com/olekukonko/tablewriter"
 
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
@@ -17,28 +20,40 @@ type DrlmapiConfig struct {
 type server struct{}
 
 func (s *server) LoginUser(ctx context.Context, in *pb.UserRequest) (*pb.SessionReply, error) {
-	log.Printf("Received login for user: %v", in.User)
+	log.Info("Received login for user: " + in.User)
 
 	return &pb.SessionReply{Message: "Hello " + in.User + " / nova sessio "}, nil
 }
 
 func (s *server) AddUser(ctx context.Context, in *pb.UserRequest) (*pb.SessionReply, error) {
-	log.Printf("Received add user - user: %v / pass: %v", in.User, in.Pass)
+	log.Info("Received add user - user: " + in.User + " / pass: " + in.Pass)
 	u := User{User: in.User, Password: in.Pass}
 	u.AddUser()
 	return &pb.SessionReply{Message: "add user " + in.User + " to database"}, nil
 }
 
 func (s *server) DelUser(ctx context.Context, in *pb.UserRequest) (*pb.SessionReply, error) {
-	log.Printf("Received delete user - user: %v", in.User)
-
+	log.Info("Received delete user - user: " + in.User)
+	u := User{}
+	u.LoadUser(in.User)
+	u.Delete()
 	return &pb.SessionReply{Message: "delete user " + in.User + " from database"}, nil
 }
 
 func (s *server) ListUser(ctx context.Context, in *pb.UserRequest) (*pb.SessionReply, error) {
-	log.Printf("Received list users")
+	log.Info("Received list users")
 
-	return &pb.SessionReply{Message: "lits users from database"}, nil
+	users := []User{}
+	DBConn.Find(&users)
+
+	table := tablewriter.NewWriter(os.Stdout)
+	table.SetHeader([]string{"Id", "Created At", "Updated At", "Deleted At", "User", "Pass"})
+
+	for i, _ := range users {
+		table.Append([]string{fmt.Sprint(users[i].ID), users[i].CreatedAt.String(), users[i].UpdatedAt.String(), "", users[i].User, users[i].Password})
+	}
+	table.Render()
+	return &pb.SessionReply{Message: "mostrada"}, nil
 }
 
 var s *grpc.Server
@@ -46,11 +61,11 @@ var s *grpc.Server
 func InitDrlmapi(cfg DrlmapiConfig) {
 	lis, err := net.Listen("tcp", ":"+cfg.Port)
 	if err != nil {
-		log.Fatalf("failed to listen: %v", err)
+		log.Fatal("failed to listen: " + err.Error())
 	}
 	s := grpc.NewServer()
 	pb.RegisterDrlmApiServer(s, &server{})
 	if err := s.Serve(lis); err != nil {
-		log.Fatalf("failed to serve: %v", err)
+		log.Fatalf("failed to serve: " + err.Error())
 	}
 }

@@ -22,7 +22,7 @@ func InitDatabase(cfg DatabaseConfig) {
 		return
 	}
 
-	connectionString := (cfg.User + ":" + cfg.Password + "@tcp(" + cfg.Server + ":" + cfg.Port + ")/" + cfg.Database)
+	connectionString := (cfg.User + ":" + cfg.Password + "@tcp(" + cfg.Server + ":" + cfg.Port + ")/" + cfg.Database + "?parseTime=true")
 
 	db, err := gorm.Open("mysql", connectionString)
 	if err != nil {

@@ -5,15 +5,16 @@ import (
 	"os"
 	"strings"
 
+	"github.com/brainupdaters/drlm-comm/logger"
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/viper"
 )
 
 type DrlmcoreConfig struct {
-	Database DatabaseConfig `mapstructure:"database"`
-	Minio    MinioConfig    `mapstructure:"minio"`
-	Drlmapi  DrlmapiConfig  `mapstructure:"drlmapi"`
-	Logging  LoggingConfig  `mapstructure:"logging"`
+	Database DatabaseConfig       `mapstructure:"database"`
+	Minio    MinioConfig          `mapstructure:"minio"`
+	Drlmapi  DrlmapiConfig        `mapstructure:"drlmapi"`
+	Logging  logger.LoggingConfig `mapstructure:"logging"`
 }
 
 var Config *DrlmcoreConfig
@@ -36,7 +37,7 @@ func InitConfig(c string) {
 	}
 
 	// Enable environment variables
-	// ex.: DRLMCORE_DATABASE_PORT=8000
+	// ex.: DRLMCORE_DRLMAPI_PORT=8000
 	viper.SetEnvPrefix("DRLMCORE")
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 	viper.AutomaticEnv() // read in environment variables that match

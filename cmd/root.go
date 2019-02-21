@@ -19,6 +19,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/brainupdaters/drlm-comm/logger"
 	"github.com/brainupdaters/drlm-core/lib"
 	"github.com/spf13/cobra"
 )
@@ -52,6 +53,8 @@ func Execute() {
 
 func init() {
 	cobra.OnInitialize(initConfig)
+
+	// Here you will define your flags and configuration settings.
 	rootCmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "", "config file (default is $HOME/.drlm-core.toml)")
 	rootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "Enable verbose mode")
 }
@@ -59,7 +62,7 @@ func init() {
 // initConfig reads in config file and ENV variables if set.
 func initConfig() {
 	lib.InitConfig(cfgFile)
-	lib.InitLogger(lib.Config.Logging)
+	logger.InitLogger(lib.Config.Logging)
 	lib.InitDatabase(lib.Config.Database)
 	lib.InitDrlmapi(lib.Config.Drlmapi)
 }
