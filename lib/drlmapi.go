@@ -1,10 +1,10 @@
 package lib
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"net"
-	"os"
 
 	pb "github.com/brainupdaters/drlm-comm/drlmcomm"
 	"github.com/olekukonko/tablewriter"
@@ -46,14 +46,18 @@ func (s *server) ListUser(ctx context.Context, in *pb.UserRequest) (*pb.SessionR
 	users := []User{}
 	DBConn.Find(&users)
 
-	table := tablewriter.NewWriter(os.Stdout)
-	table.SetHeader([]string{"Id", "Created At", "Updated At", "Deleted At", "User", "Pass"})
+	buf := new(bytes.Buffer)
+
+	table := tablewriter.NewWriter(buf)
+	table.SetHeader([]string{"Id", "Created At", "Updated At", "User", "Pass"})
 
 	for i, _ := range users {
-		table.Append([]string{fmt.Sprint(users[i].ID), users[i].CreatedAt.String(), users[i].UpdatedAt.String(), "", users[i].User, users[i].Password})
+		table.Append([]string{fmt.Sprint(users[i].ID), users[i].CreatedAt.String(), users[i].UpdatedAt.String(), users[i].User, users[i].Password})
 	}
+
 	table.Render()
-	return &pb.SessionReply{Message: "mostrada"}, nil
+
+	return &pb.SessionReply{Message: "\n" + buf.String()}, nil
 }
 
 var s *grpc.Server
