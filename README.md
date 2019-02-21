@@ -6,21 +6,21 @@ drlm-Core v3
 
 `$ go get -u google.golang.org/grpc`
 
-## Install cobra 
+## Install cobra
 
 `$ go get -u github.com/spf13/cobra/cobra`
 
-```
+```bash
 $ cat $HOME/.cobra.yaml
 author: Pau Roura <pau@brainupdaters.net>
 license: AGPL
 ```
+
 `$ cobra init github.com/brainupdaters/drlm-cli`
 `$ cd github.com/brainupdaters/drlm-cli`
 `$ cobra add newCommand`
 
-
-https://github.com/spf13/cobra/blob/master/cobra/README.md
+<https://github.com/spf13/cobra/blob/master/cobra/README.md>
 
 ## Install logrus
 
@@ -28,10 +28,9 @@ Logrus is a structured logger for Go (golang), completely API compatible with th
 
 `$ go get "github.com/Sirupsen/logrus"`
 
+## install Protocol Buffers V3
 
-### install Protocol Buffers V3
-
-The simplest way to do this is to download pre-compiled binaries for your platform(protoc-<version>-<platform>.zip) from here: https://github.com/google/protobuf/releases
+The simplest way to do this is to download pre-compiled binaries for your platform(protoc-``<``version``>``-``<``platform``>``.zip) from here: <https://github.com/google/protobuf/releases>
 *Unzip this file.
 *Update the environment variable PATH to include the path to the protoc binary file.
 
@@ -39,8 +38,8 @@ The simplest way to do this is to download pre-compiled binaries for your platfo
 
 `$ protoc -I drlm-comm/ drlm-comm/drlm-comm.proto --go_out=plugins=grpc:drlm-comm/`
 
-
-
 ## etcd
+
 ## mgmtconfig
-## Sentry
+
+## sentry
