@@ -19,6 +19,13 @@ type DrlmcoreConfig struct {
 
 var Config *DrlmcoreConfig
 
+func SetConfigDefaults() {
+	SetDatabaseConfigDefaults()
+	SetMinioConfigDefaults()
+	SetDrlmapiConfigDefaults()
+	logger.SetLoggingConfigDefaults("drlm-core")
+}
+
 func InitConfig(c string) {
 	if c != "" {
 		// Use config file from the flag.
@@ -37,6 +44,8 @@ func InitConfig(c string) {
 		viper.SetConfigName(".drlm-core")
 	}
 
+	SetConfigDefaults()
+
 	// Enable environment variables
 	// ex.: DRLMCORE_DRLMAPI_PORT=8000
 	viper.SetEnvPrefix("DRLMCORE")
@@ -47,8 +56,6 @@ func InitConfig(c string) {
 	if err := viper.ReadInConfig(); err == nil {
 		fmt.Println("Using config file:", viper.ConfigFileUsed())
 	}
-
-	// var config Config
 
 	err := viper.Unmarshal(&Config)
 	if err != nil {

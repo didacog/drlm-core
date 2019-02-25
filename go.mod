@@ -6,7 +6,7 @@ require (
 	dmitri.shuralyov.com/service/change v0.0.0-20190203163610-217368fe4577 // indirect
 	git.apache.org/thrift.git v0.12.0 // indirect
 	github.com/Shopify/sarama v1.21.0 // indirect
-	github.com/brainupdaters/drlm-common v0.0.0-20190225152742-991028998c2d
+	github.com/brainupdaters/drlm-common v0.0.0-20190225190605-55aa14fcc7c3
 	github.com/coreos/etcd v3.3.12+incompatible // indirect
 	github.com/coreos/go-systemd v0.0.0-20190212144455-93d5ec2c7f76 // indirect
 	github.com/gliderlabs/ssh v0.1.3 // indirect
@@ -34,7 +34,7 @@ require (
 	github.com/pkg/errors v0.8.1 // indirect
 	github.com/prometheus/client_model v0.0.0-20190129233127-fd36f4220a90 // indirect
 	github.com/prometheus/common v0.2.0 // indirect
-	github.com/prometheus/procfs v0.0.0-20190219184716-e4d4a2206da0 // indirect
+	github.com/prometheus/procfs v0.0.0-20190225181712-6ed1f7e10411 // indirect
 	github.com/rifflock/lfshook v0.0.0-20180920164130-b9218ef580f5 // indirect
 	github.com/russross/blackfriday v2.0.0+incompatible // indirect
 	github.com/shurcooL/go v0.0.0-20190121191506-3fef8c783dec // indirect
@@ -62,6 +62,7 @@ require (
 	golang.org/x/build v0.0.0-20190223001823-277427799bd4 // indirect
 	golang.org/x/crypto v0.0.0-20190225124518-7f87c0fbb88b // indirect
 	golang.org/x/exp v0.0.0-20190221220918-438050ddec5e // indirect
+	golang.org/x/net v0.0.0-20190225153610-fe579d43d832 // indirect
 	golang.org/x/oauth2 v0.0.0-20190220154721-9b3c75971fc9 // indirect
 	golang.org/x/perf v0.0.0-20190124201629-844a5f5b46f4 // indirect
 	golang.org/x/sys v0.0.0-20190225065934-cc5685c2db12 // indirect

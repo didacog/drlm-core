@@ -4,6 +4,7 @@ import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	log "github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
 )
 
 type DatabaseConfig struct {
@@ -15,6 +16,14 @@ type DatabaseConfig struct {
 }
 
 var DBConn *gorm.DB
+
+func SetDatabaseConfigDefaults() {
+	viper.SetDefault("database.server", "localhost")
+	viper.SetDefault("database.port", "3306")
+	viper.SetDefault("database.user", "drlm3")
+	viper.SetDefault("database.password", "drlm3db")
+	viper.SetDefault("database.database", "drlm3")
+}
 
 func InitDatabase(cfg DatabaseConfig) {
 

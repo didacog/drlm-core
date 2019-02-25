@@ -16,6 +16,8 @@ secret_key = "drlm3minio"
 
 [drlmapi]
 port = "50051"
+user = "drlmadmin"
+password = "drlm3api"
 
 [logging]
 #############################################################################
@@ -28,4 +30,4 @@ port = "50051"
 #         panic ("I'm bailing.")     --> Calls panic() after logging        #
 #############################################################################
 level = "trace"
-file = "./go.log/drlm-core.log"
+file = "./drlm-core.log"

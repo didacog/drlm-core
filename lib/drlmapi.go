@@ -8,6 +8,7 @@ import (
 
 	pb "github.com/brainupdaters/drlm-common/comms"
 	"github.com/olekukonko/tablewriter"
+	"github.com/spf13/viper"
 
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
@@ -15,6 +16,12 @@ import (
 
 type DrlmapiConfig struct {
 	Port string
+}
+
+func SetDrlmapiConfigDefaults() {
+	viper.SetDefault("drlmapi.port", 50051)
+	viper.SetDefault("drlmapi.user", "drlmadmin")
+	viper.SetDefault("drlmapi.password", "drlm3api")
 }
 
 type server struct{}
