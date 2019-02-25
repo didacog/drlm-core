@@ -19,7 +19,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/brainupdaters/drlm-comm/logger"
+	"github.com/brainupdaters/drlm-common/logger"
 	"github.com/brainupdaters/drlm-core/lib"
 	"github.com/spf13/cobra"
 )

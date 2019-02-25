@@ -15,3 +15,5 @@ deps:
 	go build -v ./...
 upgrade:
 	go get -u
+run:
+	go run drlm-core.go

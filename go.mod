@@ -5,11 +5,11 @@ require (
 	dmitri.shuralyov.com/app/changes v0.0.0-20181114035150-5af16e21babb // indirect
 	dmitri.shuralyov.com/service/change v0.0.0-20190203163610-217368fe4577 // indirect
 	git.apache.org/thrift.git v0.12.0 // indirect
-	github.com/Shopify/sarama v1.20.1 // indirect
-	github.com/brainupdaters/drlm-comm v0.0.0-20190221110135-5d79a1e32062
+	github.com/Shopify/sarama v1.21.0 // indirect
+	github.com/brainupdaters/drlm-common v0.0.0-20190225152742-991028998c2d
 	github.com/coreos/etcd v3.3.12+incompatible // indirect
 	github.com/coreos/go-systemd v0.0.0-20190212144455-93d5ec2c7f76 // indirect
-	github.com/gliderlabs/ssh v0.1.2 // indirect
+	github.com/gliderlabs/ssh v0.1.3 // indirect
 	github.com/go-logfmt/logfmt v0.4.0 // indirect
 	github.com/go-sql-driver/mysql v1.4.1 // indirect
 	github.com/gogo/protobuf v1.2.1 // indirect
@@ -59,13 +59,13 @@ require (
 	github.com/ugorji/go/codec v0.0.0-20190204201341-e444a5086c43 // indirect
 	go.opencensus.io v0.19.0 // indirect
 	go4.org v0.0.0-20190218023631-ce4c26f7be8e // indirect
-	golang.org/x/build v0.0.0-20190221024721-9e83d8587038 // indirect
-	golang.org/x/crypto v0.0.0-20190219172222-a4c6cb3142f2 // indirect
-	golang.org/x/exp v0.0.0-20190212162250-21964bba6549 // indirect
+	golang.org/x/build v0.0.0-20190223001823-277427799bd4 // indirect
+	golang.org/x/crypto v0.0.0-20190225124518-7f87c0fbb88b // indirect
+	golang.org/x/exp v0.0.0-20190221220918-438050ddec5e // indirect
 	golang.org/x/oauth2 v0.0.0-20190220154721-9b3c75971fc9 // indirect
 	golang.org/x/perf v0.0.0-20190124201629-844a5f5b46f4 // indirect
-	golang.org/x/sys v0.0.0-20190221075227-b4e8571b14e0 // indirect
-	golang.org/x/tools v0.0.0-20190221000707-a754db16a40a
+	golang.org/x/sys v0.0.0-20190225065934-cc5685c2db12 // indirect
+	golang.org/x/tools v0.0.0-20190221204921-83362c3779f5
 	google.golang.org/genproto v0.0.0-20190219182410-082222b4a5c5 // indirect
 	google.golang.org/grpc v1.18.0
 	honnef.co/go/tools v0.0.0-20190215041234-466a0476246c // indirect

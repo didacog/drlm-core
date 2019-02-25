@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"net"
 
-	pb "github.com/brainupdaters/drlm-comm/drlmcomm"
+	pb "github.com/brainupdaters/drlm-common/comms"
 	"github.com/olekukonko/tablewriter"
 
 	log "github.com/sirupsen/logrus"

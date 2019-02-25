@@ -5,7 +5,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/brainupdaters/drlm-comm/logger"
+	"github.com/brainupdaters/drlm-common/logger"
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/viper"
 )
@@ -33,6 +33,7 @@ func InitConfig(c string) {
 
 		// Search config in home directory with name ".drlm-core" (without extension).
 		viper.AddConfigPath(home)
+		viper.AddConfigPath(".")
 		viper.SetConfigName(".drlm-core")
 	}
 
