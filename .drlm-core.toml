@@ -1,14 +1,14 @@
 # drln-core configuration file
 
 [database]
-server = "localhost"
+server = "mariadb"
 port = "3306"
 user = "drlm3" 
 password = "drlm3db"
 database = "drlm3"
 
 [minio]
-server = "localhost"
+server = "minio"
 port = "9000"
 ssl = false
 access_key = "drlm3minio"
