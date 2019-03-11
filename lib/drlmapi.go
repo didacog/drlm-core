@@ -18,6 +18,7 @@ import (
 )
 
 type DrlmapiConfig struct {
+	Server   string
 	Port     string
 	Tls      bool
 	Cert     string
@@ -27,10 +28,11 @@ type DrlmapiConfig struct {
 }
 
 func SetDrlmapiConfigDefaults() {
+	viper.SetDefault("drlmapi.server", "godev")
 	viper.SetDefault("drlmapi.port", 50051)
 	viper.SetDefault("drlmapi.tls", false)
-	viper.SetDefault("drlmapi.cert", "cert/server.crt")
-	viper.SetDefault("drlmapi.key", "cert/server.key")
+	viper.SetDefault("drlmapi.cert", "/tls/godev/godev.crt")
+	viper.SetDefault("drlmapi.key", "/tls/godev/godev.key")
 	viper.SetDefault("drlmapi.user", "drlmadmin")
 	viper.SetDefault("drlmapi.password", "drlm3api")
 }
@@ -50,10 +52,10 @@ func authenticateClient(ctx context.Context, s *server) (string, error) {
 	if md, ok := metadata.FromIncomingContext(ctx); ok {
 		clientLogin := strings.Join(md["login"], "")
 		clientPassword := strings.Join(md["password"], "")
-		if clientLogin != "drlmadmin" {
+		if clientLogin != Config.Drlmapi.User {
 			return "", fmt.Errorf("unknown user %s", clientLogin)
 		}
-		if clientPassword != "drlm3api" {
+		if clientPassword != Config.Drlmapi.Password {
 			return "", fmt.Errorf("bad password %s", clientPassword)
 		}
 		log.Printf("authenticated client: %s", clientLogin)
@@ -119,10 +121,9 @@ func (s *server) ListUser(ctx context.Context, in *pb.UserRequest) (*pb.SessionR
 
 var s *grpc.Server
 
-func InitDrlmapi(cfg DrlmapiConfig) {
-
+func InitDrlmapi() {
 	// create a listener on TCP port
-	lis, err := net.Listen("tcp", "localhost:"+cfg.Port)
+	lis, err := net.Listen("tcp", Config.Drlmapi.Server+":"+Config.Drlmapi.Port)
 	if err != nil {
 		log.Fatal("failed to listen: " + err.Error())
 	}
@@ -132,26 +133,21 @@ func InitDrlmapi(cfg DrlmapiConfig) {
 	var creds credentials.TransportCredentials
 	var opts []grpc.ServerOption
 
-	if cfg.Tls {
-		fmt.Println("Si que fem servir el TLS")
+	if Config.Drlmapi.Tls {
 		// Create the TLS credentials
-		creds, err = credentials.NewServerTLSFromFile(cfg.Cert, cfg.Key)
+		creds, err = credentials.NewServerTLSFromFile(Config.Drlmapi.Cert, Config.Drlmapi.Key)
 		if err != nil {
 			log.Fatalf("could not load TLS keys: %s", err)
 		}
-
 		// Create an array of gRPC options with the credentials
-		opts = []grpc.ServerOption{grpc.Creds(creds),
-			grpc.UnaryInterceptor(unaryInterceptor)}
+		opts = []grpc.ServerOption{grpc.Creds(creds), grpc.UnaryInterceptor(unaryInterceptor)}
 	} else {
-		fmt.Println("No que fem servir el TLS")
-
 		opts = []grpc.ServerOption{grpc.UnaryInterceptor(unaryInterceptor)}
 	}
 	// create a gRPC server object
 	grpcServer := grpc.NewServer(opts...)
 
-	// attach the Ping service to the server
+	// attach the DrlmApi service to the server
 	pb.RegisterDrlmApiServer(grpcServer, &s)
 
 	// start the server
@@ -159,5 +155,4 @@ func InitDrlmapi(cfg DrlmapiConfig) {
 	if err := grpcServer.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %s", err)
 	}
-
 }

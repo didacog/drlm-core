@@ -63,8 +63,8 @@ func init() {
 func initConfig() {
 	lib.InitConfig(cfgFile)
 	logger.InitLogger(lib.Config.Logging)
-	lib.InitDatabase(lib.Config.Database)
-	lib.InitDrlmapi(lib.Config.Drlmapi)
+	lib.InitDatabase()
+	lib.InitDrlmapi()
 }
 
 func run(cmd *cobra.Command, args []string) {

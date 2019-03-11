@@ -11,7 +11,7 @@ type MinioConfig struct {
 }
 
 func SetMinioConfigDefaults() {
-	viper.SetDefault("minio.server", "localhost")
+	viper.SetDefault("minio.server", "minio")
 	viper.SetDefault("minio.port", "9000")
 	viper.SetDefault("minio.ssl", false)
 	viper.SetDefault("minio.access_key", "drlm3minio")

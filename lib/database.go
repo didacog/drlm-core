@@ -18,20 +18,20 @@ type DatabaseConfig struct {
 var DBConn *gorm.DB
 
 func SetDatabaseConfigDefaults() {
-	viper.SetDefault("database.server", "localhost")
+	viper.SetDefault("database.server", "mariadb")
 	viper.SetDefault("database.port", "3306")
 	viper.SetDefault("database.user", "drlm3")
 	viper.SetDefault("database.password", "drlm3db")
 	viper.SetDefault("database.database", "drlm3")
 }
 
-func InitDatabase(cfg DatabaseConfig) {
+func InitDatabase() {
 
 	if DBConn != nil {
 		return
 	}
 
-	connectionString := (cfg.User + ":" + cfg.Password + "@tcp(" + cfg.Server + ":" + cfg.Port + ")/" + cfg.Database + "?parseTime=true")
+	connectionString := (Config.Database.User + ":" + Config.Database.Password + "@tcp(" + Config.Database.Server + ":" + Config.Database.Port + ")/" + Config.Database.Database + "?parseTime=true")
 
 	db, err := gorm.Open("mysql", connectionString)
 	if err != nil {
