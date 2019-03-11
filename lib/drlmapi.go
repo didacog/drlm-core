@@ -52,13 +52,29 @@ func authenticateClient(ctx context.Context, s *server) (string, error) {
 	if md, ok := metadata.FromIncomingContext(ctx); ok {
 		clientLogin := strings.Join(md["login"], "")
 		clientPassword := strings.Join(md["password"], "")
-		if clientLogin != Config.Drlmapi.User {
-			return "", fmt.Errorf("unknown user %s", clientLogin)
+
+		u := User{}
+		u.LoadUser(clientLogin)
+
+		if u.User != "" {
+			if (clientLogin != u.User) {
+				log.Warn("Failed login attemt with user: " + u.User )
+				return "", fmt.Errorf("unknown user %s", clientLogin)
+			}
+			if (clientPassword != u.Password) {
+				return "", fmt.Errorf("bad password %s", clientPassword)
+			}
+			log.Printf("authenticated client: %s", clientLogin)
+		} else {
+			if (clientLogin != Config.Drlmapi.User) {
+				log.Warn("Failed login attemt with user: " + clientLogin)
+				return "", fmt.Errorf("unknown user %s", clientLogin)
+			}
+			if (clientPassword != Config.Drlmapi.Password) {
+				return "", fmt.Errorf("bad password %s", clientPassword)
+			}
+			log.Printf("authenticated client: %s", clientLogin)
 		}
-		if clientPassword != Config.Drlmapi.Password {
-			return "", fmt.Errorf("bad password %s", clientPassword)
-		}
-		log.Printf("authenticated client: %s", clientLogin)
 		return "42", nil
 	}
 	return "", fmt.Errorf("missing credentials")
@@ -93,10 +109,21 @@ func (s *server) AddUser(ctx context.Context, in *pb.UserRequest) (*pb.SessionRe
 
 func (s *server) DelUser(ctx context.Context, in *pb.UserRequest) (*pb.SessionReply, error) {
 	log.Info("Received delete user - user: " + in.User)
+	
 	u := User{}
 	u.LoadUser(in.User)
-	u.Delete()
-	return &pb.SessionReply{Message: "delete user " + in.User + " from database"}, nil
+
+	var message string
+	
+	if u.User == in.User {
+		u.Delete()
+		log.Info("Deleted user " + in.User + " from database.")
+		message = "Deleted user " + in.User + " from database"
+	} else {
+		log.Info("User " + in.User + " to delete not found in database.")
+		message = "User " + in.User + " to delete not found in database"
+	}
+	return &pb.SessionReply{Message: message}, nil
 }
 
 func (s *server) ListUser(ctx context.Context, in *pb.UserRequest) (*pb.SessionReply, error) {

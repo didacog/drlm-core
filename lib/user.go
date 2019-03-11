@@ -22,6 +22,14 @@ func (u *User) SetPassword(pass string) {
 	u.Password = pass
 }
 
+func (u *User) CheckPassword(pass string) bool{
+	if pass == u.Password {
+		return true
+	} else {
+		return false
+	}
+}
+
 func (u *User) SetUser(user string) {
 	u.User = user
 }
