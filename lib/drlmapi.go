@@ -5,6 +5,7 @@ import (
 	"context"
 	"fmt"
 	"net"
+	"strings"
 
 	pb "github.com/brainupdaters/drlm-common/comms"
 	"github.com/olekukonko/tablewriter"
@@ -12,19 +13,68 @@ import (
 
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/metadata"
 )
 
 type DrlmapiConfig struct {
-	Port string
+	Port     string
+	Tls      bool
+	Cert     string
+	Key      string
+	User     string
+	Password string
 }
 
 func SetDrlmapiConfigDefaults() {
 	viper.SetDefault("drlmapi.port", 50051)
+	viper.SetDefault("drlmapi.tls", false)
+	viper.SetDefault("drlmapi.cert", "cert/server.crt")
+	viper.SetDefault("drlmapi.key", "cert/server.key")
 	viper.SetDefault("drlmapi.user", "drlmadmin")
 	viper.SetDefault("drlmapi.password", "drlm3api")
 }
 
-type server struct{}
+type server struct {
+}
+
+// private type for Context keys
+type contextKey int
+
+const (
+	clientIDKey contextKey = iota
+)
+
+// authenticateAgent check the client credentials
+func authenticateClient(ctx context.Context, s *server) (string, error) {
+	if md, ok := metadata.FromIncomingContext(ctx); ok {
+		clientLogin := strings.Join(md["login"], "")
+		clientPassword := strings.Join(md["password"], "")
+		if clientLogin != "drlmadmin" {
+			return "", fmt.Errorf("unknown user %s", clientLogin)
+		}
+		if clientPassword != "drlm3api" {
+			return "", fmt.Errorf("bad password %s", clientPassword)
+		}
+		log.Printf("authenticated client: %s", clientLogin)
+		return "42", nil
+	}
+	return "", fmt.Errorf("missing credentials")
+}
+
+// unaryInterceptor calls authenticateClient with current context
+func unaryInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
+	s, ok := info.Server.(*server)
+	if !ok {
+		return nil, fmt.Errorf("unable to cast server")
+	}
+	clientID, err := authenticateClient(ctx, s)
+	if err != nil {
+		return nil, err
+	}
+	ctx = context.WithValue(ctx, clientIDKey, clientID)
+	return handler(ctx, req)
+}
 
 func (s *server) LoginUser(ctx context.Context, in *pb.UserRequest) (*pb.SessionReply, error) {
 	log.Info("Received login for user: " + in.User)
@@ -70,13 +120,44 @@ func (s *server) ListUser(ctx context.Context, in *pb.UserRequest) (*pb.SessionR
 var s *grpc.Server
 
 func InitDrlmapi(cfg DrlmapiConfig) {
-	lis, err := net.Listen("tcp", ":"+cfg.Port)
+
+	// create a listener on TCP port
+	lis, err := net.Listen("tcp", "localhost:"+cfg.Port)
 	if err != nil {
 		log.Fatal("failed to listen: " + err.Error())
 	}
-	s := grpc.NewServer()
-	pb.RegisterDrlmApiServer(s, &server{})
-	if err := s.Serve(lis); err != nil {
-		log.Fatalf("failed to serve: " + err.Error())
+
+	// create a server instance
+	s := server{}
+	var creds credentials.TransportCredentials
+	var opts []grpc.ServerOption
+
+	if cfg.Tls {
+		fmt.Println("Si que fem servir el TLS")
+		// Create the TLS credentials
+		creds, err = credentials.NewServerTLSFromFile(cfg.Cert, cfg.Key)
+		if err != nil {
+			log.Fatalf("could not load TLS keys: %s", err)
+		}
+
+		// Create an array of gRPC options with the credentials
+		opts = []grpc.ServerOption{grpc.Creds(creds),
+			grpc.UnaryInterceptor(unaryInterceptor)}
+	} else {
+		fmt.Println("No que fem servir el TLS")
+
+		opts = []grpc.ServerOption{grpc.UnaryInterceptor(unaryInterceptor)}
 	}
+	// create a gRPC server object
+	grpcServer := grpc.NewServer(opts...)
+
+	// attach the Ping service to the server
+	pb.RegisterDrlmApiServer(grpcServer, &s)
+
+	// start the server
+	log.Info("starting HTTP/2 gRPC server on " + lis.Addr().String())
+	if err := grpcServer.Serve(lis); err != nil {
+		log.Fatalf("failed to serve: %s", err)
+	}
+
 }

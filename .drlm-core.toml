@@ -16,6 +16,9 @@ secret_key = "drlm3minio"
 
 [drlmapi]
 port = "50051"
+tls = false
+cert = "/tls/godev/godev.crt"
+key = "/tls/godev/godev.key"
 user = "drlmadmin"
 password = "drlm3api"
 
@@ -31,3 +34,4 @@ password = "drlm3api"
 #############################################################################
 level = "trace"
 file = "./drlm-core.log"
+
